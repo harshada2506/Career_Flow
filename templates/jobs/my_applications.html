@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Applications | Career Flow</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#0a66c2;
+  --light:#f3f4f6;
+  --gray:#6b7280;
+  --danger:#dc2626;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body{
+  background:var(--light);
+}
+
+header{
+  background:white;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+.logo{
+  font-weight:700;
+  color:var(--primary);
+}
+
+.back{
+  text-decoration:none;
+  color:var(--primary);
+  font-weight:600;
+}
+
+.container{
+  max-width:900px;
+  margin:30px auto;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+
+.job-title{
+  font-weight:600;
+  font-size:18px;
+}
+
+.status{
+  display:inline-block;
+  background:#e0ecfb;
+  color:var(--primary);
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:12px;
+  margin-top:6px;
+}
+
+.remove-btn{
+  margin-top:10px;
+  background:var(--danger);
+  color:white;
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.empty{
+  text-align:center;
+  margin-top:40px;
+  color:var(--gray);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Career Flow</div>
+  <a href="jobs.html" class="back">← Back to Jobs</a>
+</header>
+
+<div class="container" id="applicationContainer">
+</div>
+
+<script>
+
+/* Session Check */
+if(!localStorage.getItem("loggedInUser")){
+  window.location.href="../authenticationmodule/login.html";
+}
+
+let container = document.getElementById("applicationContainer");
+let applications = JSON.parse(localStorage.getItem("applications")) || [];
+
+function loadApplications(){
+
+  if(applications.length === 0){
+    container.innerHTML = `
+      <div class="empty">
+        <h3>No Applications Found</h3>
+        <p>You have not applied to any jobs yet.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  applications.forEach((app, index) => {
+
+    container.innerHTML += `
+      <div class="card">
+        <div class="job-title">${app.job}</div>
+        <div><strong>Name:</strong> ${app.name || "N/A"}</div>
+        <div><strong>Email:</strong> ${app.email || "N/A"}</div>
+        <div class="status">Applied</div>
+        <button class="remove-btn" onclick="removeApplication(${index})">
+          Withdraw Application
+        </button>
+      </div>
+    `;
+  });
+}
+
+function removeApplication(index){
+
+  if(confirm("Are you sure you want to withdraw this application?")){
+    applications.splice(index,1);
+    localStorage.setItem("applications", JSON.stringify(applications));
+    loadApplications();
+  }
+}
+
+loadApplications();
+
+</script>
+
+</body>
+</html>

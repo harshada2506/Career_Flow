@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify OTP | Career Flow</title>
+
+<style>
+:root {
+    --primary: #0a66c2;
+    --dark: #1f2937;
+    --gray: #6b7280;
+    --light: #f9fafb;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 45px;
+    box-shadow: 0 22px 55px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.logo img {
+    width: 42px;
+    border-radius: 8px;
+}
+
+.logo h1 {
+    font-size: 24px;
+    color: var(--dark);
+}
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--dark);
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 25px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 6px;
+    border-radius: 10px;
+    border: 1.6px solid #d1d5db;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #084b94;
+}
+
+.message {
+    font-size: 13px;
+    margin-top: 15px;
+    display: none;
+}
+
+.error { color: #dc2626; }
+.success { color: #047857; }
+
+.resend {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.resend a {
+    color: var(--primary);
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">
+        <img src="../photo/logo.jpg">
+        <h1>Career Flow</h1>
+    </div>
+
+    <h2>Verify OTP</h2>
+
+    <div class="subtitle" id="otpInfo"></div>
+
+    <input type="text" id="otp" placeholder="Enter 6-digit OTP" maxlength="6">
+
+    <button onclick="verifyOtp()">Verify & Continue</button>
+
+    <div id="errorMsg" class="message error"></div>
+    <div id="successMsg" class="message success"></div>
+
+    <div class="resend">
+        Didn’t receive OTP? <a onclick="resendOtp()">Resend</a>
+    </div>
+
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+
+// get email from previous page
+const email = localStorage.getItem("temp_email");
+
+// redirect if no email
+if (!email) {
+    alert("Session expired. Please login again.");
+    window.location.href = "login.html";
+}
+
+document.getElementById("otpInfo").innerText =
+    "OTP sent to " + email;
+
+// --------------------
+// VERIFY OTP
+// --------------------
+async function verifyOtp() {
+
+    const otp = document.getElementById("otp").value.trim();
+
+    const error = document.getElementById("errorMsg");
+    const success = document.getElementById("successMsg");
+
+    error.style.display = "none";
+    success.style.display = "none";
+
+    if (!otp) {
+        error.innerText = "Please enter OTP";
+        error.style.display = "block";
+        return;
+    }
+
+    try {
+        const res = await fetch(API + "/verify-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, otp })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            error.innerText = data.detail || "Invalid OTP";
+            error.style.display = "block";
+            return;
+        }
+
+        // ✅ SAVE TOKEN (IMPORTANT FIX)
+        localStorage.setItem("access_token", data.access_token);
+
+        // cleanup
+        localStorage.removeItem("temp_email");
+
+        success.innerText = "Login successful!";
+        success.style.display = "block";
+
+        setTimeout(() => {
+            window.location.href = "../dashboard/home.html";
+        }, 1000);
+
+    } catch (err) {
+        console.error(err);
+        error.innerText = "Server not reachable";
+        error.style.display = "block";
+    }
+}
+
+// --------------------
+// RESEND OTP
+// --------------------
+async function resendOtp() {
+    try {
+        const res = await fetch(API + "/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        });
+
+        if (res.ok) {
+            alert("OTP resent successfully");
+        } else {
+            alert("Failed to resend OTP");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Server error");
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Profile | Career Flow</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Inter',sans-serif;
+    background:#f3f4f6;
+    display:flex;
+    justify-content:center;
+    padding:40px;
+}
+
+.card{
+    background:white;
+    width:100%;
+    max-width:650px;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+h2{ margin-bottom:20px; }
+
+label{ font-size:14px; font-weight:500; }
+
+input, textarea{
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    margin-bottom:18px;
+    border-radius:6px;
+    border:1px solid #d1d5db;
+}
+
+button{
+    background:#0a66c2;
+    color:white;
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{ background:#084b94; }
+
+.preview-img{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-bottom:10px;
+}
+
+.hidden{ display:none; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2 id="title">Edit Profile</h2>
+
+<!-- ✅ FORM CONNECTED TO JS -->
+<form onsubmit="updateProfile(event)">
+
+<!-- PROFILE PHOTO -->
+<label>Profile Photo</label>
+<img id="photoPreview" class="preview-img" src="">
+<input type="file" id="photoInput" accept="image/*" onchange="loadPhoto(event)">
+
+<!-- USER FIELDS -->
+<div id="userFields">
+
+<label>Full Name</label>
+<input type="text" id="fullname">
+
+<label>Headline</label>
+<input type="text" id="headline">
+
+<label>Skills (comma separated)</label>
+<input type="text" id="skills">
+
+<label>Education / Experience</label>
+<textarea id="education"></textarea>
+
+<label>LinkedIn URL</label>
+<input type="url" id="linkedin">
+
+<label>Location</label>
+<input type="text" id="location">
+
+<label>Bio</label>
+<textarea id="bio"></textarea>
+
+</div>
+
+<!-- COMPANY FIELDS -->
+<div id="companyFields" class="hidden">
+
+<label>Company Name</label>
+<input type="text" id="companyName">
+
+<label>Industry</label>
+<input type="text" id="industry">
+
+<label>Company Location</label>
+<input type="text" id="companyLocation">
+
+<label>Company Website</label>
+<input type="url" id="companyWebsite">
+
+<label>About Company</label>
+<textarea id="aboutCompany"></textarea>
+
+</div>
+
+<button type="submit">Save Changes</button>
+
+</form>
+
+</div>
+
+<script>
+
+const token = localStorage.getItem("token");
+
+/* 🔐 If not logged in */
+if(!token){
+    alert("Please login first");
+    window.location.href = "login.html";
+}
+
+/* 📸 IMAGE PREVIEW */
+function loadPhoto(event){
+    const reader = new FileReader();
+    reader.onload = function(){
+        document.getElementById("photoPreview").src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+/* 🚀 FETCH USER DATA (AUTO FILL FORM) */
+async function loadProfile(){
+    try{
+        const res = await fetch("http://localhost:8000/me", {
+            headers:{
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        const user = await res.json();
+
+        document.getElementById("fullname").value = user.fullname || "";
+        document.getElementById("headline").value = user.headline || "";
+        document.getElementById("skills").value = user.skills || "";
+        document.getElementById("education").value = user.education || "";
+        document.getElementById("linkedin").value = user.linkedin || "";
+        document.getElementById("location").value = user.location || "";
+        document.getElementById("bio").value = user.bio || "";
+
+        document.getElementById("companyName").value = user.company_name || "";
+        document.getElementById("industry").value = user.industry || "";
+        document.getElementById("companyLocation").value = user.location || "";
+        document.getElementById("companyWebsite").value = user.company_website || "";
+        document.getElementById("aboutCompany").value = user.about_company || "";
+
+        if(user.photo){
+            document.getElementById("photoPreview").src = "http://localhost:8000/" + user.photo;
+        }
+
+        // Role switch
+        if(user.role === "company"){
+            document.getElementById("title").innerText = "Edit Company Profile";
+            document.getElementById("userFields").classList.add("hidden");
+            document.getElementById("companyFields").classList.remove("hidden");
+        }
+
+    }catch(err){
+        console.error(err);
+    }
+}
+
+loadProfile();
+
+/* 🔥 UPDATE PROFILE */
+async function updateProfile(event){
+    event.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("fullname", document.getElementById("fullname").value);
+    formData.append("headline", document.getElementById("headline").value);
+    formData.append("skills", document.getElementById("skills").value);
+    formData.append("education", document.getElementById("education").value);
+    formData.append("linkedin", document.getElementById("linkedin").value);
+    formData.append("location", document.getElementById("location").value);
+    formData.append("bio", document.getElementById("bio").value);
+
+    formData.append("companyName", document.getElementById("companyName").value);
+    formData.append("industry", document.getElementById("industry").value);
+    formData.append("companyWebsite", document.getElementById("companyWebsite").value);
+    formData.append("aboutCompany", document.getElementById("aboutCompany").value);
+
+    const photo = document.getElementById("photoInput").files[0];
+    if(photo){
+        formData.append("photo", photo);
+    }
+
+    try{
+        const res = await fetch("http://localhost:8000/update_profile", {
+            method: "POST",
+            headers:{
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if(res.ok){
+            alert("Profile Updated Successfully ✅");
+            window.location.href = "profile.html";
+        }else{
+            alert(data.detail || "Error updating profile");
+        }
+
+    }catch(err){
+        console.error(err);
+        alert("Server Error");
+    }
+}
+
+</script>
+
+</body>
+</html>

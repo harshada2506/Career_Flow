@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Flow | Professional Career Platform</title>
+
+<style>
+:root {
+    --primary: #0a66c2;
+    --dark: #1f2937;
+    --gray: #6b7280;
+    --light: #f9fafb;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main Container */
+.container {
+    width: 92%;
+    max-width: 1100px;
+    background: white;
+    border-radius: 18px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+/* Left Branding */
+.left {
+    background: linear-gradient(160deg, #0a66c2, #084b94);
+    color: white;
+    padding: 70px 60px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand img {
+    width: 48px;
+}
+
+.brand h1 {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.left p {
+    margin-top: 30px;
+    font-size: 16px;
+    line-height: 1.7;
+    opacity: 0.95;
+    max-width: 420px;
+}
+
+/* Right Actions */
+.right {
+    padding: 70px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.right h2 {
+    font-size: 26px;
+    color: var(--dark);
+    margin-bottom: 8px;
+}
+
+.right p {
+    font-size: 15px;
+    color: var(--gray);
+    margin-bottom: 40px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Buttons */
+.login-btn {
+    background: var(--primary);
+    color: white;
+    margin-bottom: 14px;
+}
+
+.login-btn:hover {
+    background: #084b94;
+}
+
+.register-btn {
+    background: transparent;
+    border: 1.8px solid var(--primary);
+    color: var(--primary);
+}
+
+.register-btn:hover {
+    background: #eef5ff;
+}
+
+/* Footer */
+.footer {
+    margin-top: 45px;
+    font-size: 13px;
+    color: var(--gray);
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    .left, .right {
+        padding: 50px 40px;
+        text-align: center;
+    }
+    .brand {
+        justify-content: center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT BRAND SECTION -->
+    <div class="left">
+        <div class="brand">
+            <img src="../photo/logo.jpg" alt="Career Flow Logo">
+            <h1>Career Flow</h1>
+        </div>
+
+        <p>
+            Career Flow is a unified professional platform that combines
+            networking, internships, and job opportunities for students
+            and professionals in one ecosystem.
+        </p>
+    </div>
+
+    <!-- RIGHT ACTION SECTION -->
+    <div class="right">
+        <h2>Welcome</h2>
+
+
+        <!-- Correctly Linked Pages -->
+        <button class="login-btn" onclick="location.href='login.html'">
+            Sign In
+        </button>
+
+        <button class="register-btn" onclick="location.href='register.html'">
+            Create Account
+        </button>
+
+        <div class="footer">
+            © 2026 Career Flow · Secure & Professional
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

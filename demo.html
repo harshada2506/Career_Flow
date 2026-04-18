@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Career Flow Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#0a66c2;
+      --primary-dark:#004182;
+      --bg:#f3f2ef;
+      --white:#ffffff;
+      --text:#1d2226;
+      --muted:#666666;
+      --border:#e0e0e0;
+      --hover:#eef3f8;
+      --shadow:0 1px 2px rgba(0,0,0,0.08);
+      --shadow-lg:0 12px 30px rgba(0,0,0,0.12);
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Inter",
+        "Segoe UI",
+        Roboto,
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Noto Color Emoji",
+        sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      background:#1f3b4d;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      padding:0 22px;
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .top-left{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+
+    .brand-wrap{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      animation:logoEnter 1s ease;
+    }
+
+    .brand-logo{
+      width:42px;
+      height:42px;
+      border-radius:10px;
+      object-fit:cover;
+      background:#0a66c2;
+      box-shadow:0 8px 20px rgba(10,102,194,0.25);
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .brand-logo:hover{
+      transform:scale(1.08);
+      box-shadow:0 12px 26px rgba(10,102,194,0.35);
+    }
+
+    .brand-fallback{
+      width:42px;
+      height:42px;
+      border-radius:10px;
+      background:#0a66c2;
+      color:white;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      font-size:17px;
+      box-shadow:0 8px 20px rgba(10,102,194,0.25);
+    }
+
+    .brand-text{
+      display:flex;
+      flex-direction:column;
+      line-height:1.05;
+    }
+
+    .brand-text .main{
+      font-size:21px;
+      font-weight:800;
+      color:white;
+      letter-spacing:-0.3px;
+    }
+
+    .brand-text .sub{
+      font-size:11px;
+      color:#dbeafe;
+      font-weight:600;
+      letter-spacing:0.4px;
+    }
+
+    .search-box{
+      background:rgba(255,255,255,0.12);
+      border-radius:8px;
+      display:flex;
+      align-items:center;
+      padding:0 12px;
+      width:340px;
+      height:38px;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+
+    .search-box input{
+      width:100%;
+      background:transparent;
+      border:none;
+      outline:none;
+      color:white;
+      font-size:14px;
+    }
+
+    .search-box input::placeholder{
+      color:#d1d5db;
+    }
+
+    .top-right{
+      display:flex;
+      align-items:center;
+      gap:20px;
+      color:#e5e7eb;
+      font-size:12px;
+    }
+
+    .nav-item{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:3px;
+      cursor:pointer;
+      min-width:58px;
+      transition:0.2s;
+      position:relative;
+    }
+
+    .nav-item:hover{
+      color:white;
+    }
+
+    .nav-icon{
+      font-size:18px;
+      line-height:1;
+    }
+
+    .me-menu{
+      position:relative;
+    }
+
+    .dropdown{
+      position:absolute;
+      right:0;
+      top:52px;
+      width:230px;
+      background:white;
+      border-radius:12px;
+      box-shadow:var(--shadow-lg);
+      border:1px solid var(--border);
+      display:none;
+      overflow:hidden;
+    }
+
+    .dropdown a{
+      display:block;
+      padding:13px 16px;
+      font-size:14px;
+      color:var(--text);
+      border-bottom:1px solid #f1f1f1;
+    }
+
+    .dropdown a:last-child{
+      border-bottom:none;
+    }
+
+    .dropdown a:hover{
+      background:#f8fafc;
+      color:var(--primary);
+    }
+
+    .info-banner{
+      max-width:1180px;
+      margin:14px auto 0;
+      text-align:center;
+      font-size:14px;
+      color:#5f6b75;
+      padding:0 12px;
+    }
+
+    .info-banner span{
+      color:var(--primary);
+      font-weight:700;
+    }
+
+    .container{
+      max-width:1180px;
+      margin:14px auto 30px;
+      display:grid;
+      grid-template-columns:260px 1fr 300px;
+      gap:22px;
+      align-items:start;
+      padding:0 10px;
+    }
+
+    .card{
+      background:var(--white);
+      border:1px solid var(--border);
+      border-radius:12px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .profile-card .cover{
+      height:92px;
+      background:linear-gradient(135deg,#4b6cb7,#182848);
+      position:relative;
+    }
+
+    .profile-card .avatar{
+      width:82px;
+      height:82px;
+      border-radius:50%;
+      border:4px solid white;
+      background:linear-gradient(135deg,#dbeafe,#93c5fd);
+      color:#1e3a8a;
+      font-size:28px;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:absolute;
+      bottom:-36px;
+      left:50%;
+      transform:translateX(-50%);
+    }
+
+    .profile-body{
+      padding:50px 18px 16px;
+      text-align:center;
+    }
+
+    .profile-body h3{
+      font-size:20px;
+      margin-bottom:4px;
+    }
+
+    .profile-body p{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:12px;
+      line-height:1.4;
+    }
+
+    .stats{
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+      margin-top:8px;
+    }
+
+    .stat-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px 0;
+      font-size:14px;
+      text-align:left;
+    }
+
+    .stat-row + .stat-row{
+      border-top:1px solid var(--border);
+    }
+
+    .stat-row span:first-child{
+      max-width:150px;
+      color:#475569;
+    }
+
+    .stat-value{
+      color:var(--primary);
+      font-weight:700;
+      font-size:20px;
+    }
+
+    .left-links{
+      margin-top:14px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .left-links a{
+      padding:12px 16px;
+      border-top:1px solid var(--border);
+      font-size:14px;
+      font-weight:500;
+      transition:0.2s;
+    }
+
+    .left-links a:hover{
+      background:var(--hover);
+      color:var(--primary);
+    }
+
+    .composer{
+      padding:0;
+    }
+
+    .composer-top{
+      padding:18px 18px 12px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .composer-header{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .composer-avatar{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#bfdbfe,#ddd6fe);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-size:16px;
+      color:#1e40af;
+    }
+
+    .composer-name{
+      font-size:15px;
+      font-weight:700;
+    }
+
+    .composer-sub{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:2px;
+    }
+
+    .composer-top textarea{
+      width:100%;
+      min-height:72px;
+      resize:none;
+      border:none;
+      outline:none;
+      font-size:16px;
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    .composer-actions{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px 18px;
+      font-size:14px;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .composer-left{
+      display:flex;
+      gap:18px;
+      color:var(--muted);
+      font-weight:500;
+      flex-wrap:wrap;
+    }
+
+    .composer-left span{
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .composer-left span:hover{
+      color:var(--primary);
+    }
+
+    .share-btn{
+      background:#c7e6fb;
+      color:#ffffff;
+      border:none;
+      padding:10px 18px;
+      border-radius:8px;
+      font-weight:700;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .share-btn.active{
+      background:var(--primary);
+    }
+
+    .post-card{
+      margin-top:16px;
+      padding:16px;
+    }
+
+    .post-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      margin-bottom:12px;
+      gap:10px;
+    }
+
+    .post-user{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .post-user-avatar{
+      width:52px;
+      height:52px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#fde68a,#fca5a5);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      color:#7c2d12;
+      font-size:18px;
+      flex-shrink:0;
+    }
+
+    .post-user-info h4{
+      font-size:15px;
+      margin-bottom:2px;
+    }
+
+    .post-user-info p{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .three-dot{
+      color:#888;
+      font-size:22px;
+      cursor:pointer;
+      line-height:1;
+    }
+
+    .post-text{
+      font-size:15px;
+      line-height:1.7;
+      color:#333;
+      margin:10px 0 12px;
+    }
+
+    .post-meta{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:10px;
+    }
+
+    .post-actions-bar{
+      display:flex;
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+    }
+
+    .post-actions-bar button{
+      flex:1;
+      border:none;
+      background:none;
+      padding:12px;
+      cursor:pointer;
+      font-weight:600;
+      color:#5f6368;
+      font-size:14px;
+      transition:0.2s;
+    }
+
+    .post-actions-bar button:hover{
+      background:var(--hover);
+      color:var(--primary);
+    }
+
+    .comment-box{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding-top:12px;
+    }
+
+    .comment-avatar{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#bfdbfe,#ddd6fe);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-size:13px;
+      color:#1e40af;
+    }
+
+    .comment-box input{
+      flex:1;
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:10px 14px;
+      outline:none;
+      font-size:14px;
+    }
+
+    .promo-post img{
+      width:100%;
+      height:290px;
+      object-fit:cover;
+      border-radius:8px;
+      margin-top:10px;
+    }
+
+    .right-card{
+      padding:16px;
+      margin-bottom:16px;
+    }
+
+    .right-card h3{
+      font-size:20px;
+      margin-bottom:14px;
+    }
+
+    .news-item{
+      margin-bottom:16px;
+    }
+
+    .news-item h4{
+      font-size:16px;
+      line-height:1.45;
+      margin-bottom:4px;
+    }
+
+    .news-item p{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .ad-box{
+      padding:10px;
+    }
+
+    .ad-inner{
+      border:1px solid var(--border);
+      border-radius:8px;
+      overflow:hidden;
+      background:#f8fafc;
+    }
+
+    .ad-top{
+      padding:20px;
+      background:linear-gradient(135deg,#f8fafc,#e0f2fe);
+    }
+
+    .ad-top h4{
+      font-size:22px;
+      line-height:1.4;
+      color:#475569;
+      margin-bottom:14px;
+    }
+
+    .ad-top button{
+      background:#0ea5e9;
+      color:white;
+      border:none;
+      border-radius:6px;
+      padding:10px 16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .ad-image{
+      height:190px;
+      background:linear-gradient(135deg,#cbd5e1,#94a3b8);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-size:20px;
+      font-weight:700;
+    }
+
+    .suggestion-title{
+      font-size:18px;
+      margin-bottom:12px;
+    }
+
+    .follow-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .follow-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .follow-avatar{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#dbeafe,#c4b5fd);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      color:#4338ca;
+      flex-shrink:0;
+    }
+
+    .follow-info h4{
+      font-size:15px;
+      margin-bottom:3px;
+    }
+
+    .follow-info p{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .follow-btn{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      border:2px solid #cbd5e1;
+      background:white;
+      color:#475569;
+      font-size:20px;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .follow-btn:hover{
+      border-color:var(--primary);
+      color:var(--primary);
+    }
+
+    @keyframes logoEnter{
+      0%{
+        opacity:0;
+        transform:scale(0.6);
+      }
+      60%{
+        opacity:1;
+        transform:scale(1.08);
+      }
+      100%{
+        opacity:1;
+        transform:scale(1);
+      }
+    }
+
+    @media(max-width:1024px){
+      .container{
+        grid-template-columns:1fr;
+      }
+
+      .search-box{
+        width:220px;
+      }
+
+      .top-right{
+        gap:14px;
+      }
+    }
+
+    @media(max-width:700px){
+      .topbar{
+        flex-direction:column;
+        height:auto;
+        padding:12px;
+        gap:12px;
+      }
+
+      .top-left,
+      .top-right{
+        width:100%;
+        justify-content:center;
+        flex-wrap:wrap;
+      }
+
+      .search-box{
+        width:100%;
+      }
+
+      .info-banner{
+        padding:0 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="top-left">
+      <a href="dashboard.html" class="brand-wrap">
+        <img src="images/logo.png" alt="Career Flow Logo" class="brand-logo" id="brandLogo">
+        <div class="brand-fallback" id="brandFallback">CF</div>
+        <div class="brand-text">
+          <span class="main">Career Flow</span>
+          <span class="sub">Build your future</span>
+        </div>
+      </a>
+
+      <div class="search-box">
+        <input type="text" placeholder="Search jobs, people, companies">
+      </div>
+    </div>
+
+    <div class="top-right">
+      <div class="nav-item" onclick="window.location.href='dashboard.html'">
+        <div class="nav-icon">🏠</div>
+        <div>Home</div>
+      </div>
+
+      <div class="nav-item" onclick="window.location.href='network.html'">
+        <div class="nav-icon">👥</div>
+        <div>Network</div>
+      </div>
+
+      <div class="nav-item" onclick="window.location.href='jobs.html'">
+        <div class="nav-icon">💼</div>
+        <div id="jobNavLabel">Jobs</div>
+      </div>
+
+      <div class="nav-item" onclick="window.location.href='feed.html'">
+        <div class="nav-icon">💬</div>
+        <div>Feed</div>
+      </div>
+
+      <div class="nav-item" onclick="window.location.href='notifications.html'">
+        <div class="nav-icon">🔔</div>
+        <div>Alerts</div>
+      </div>
+
+      <div class="nav-item me-menu" onclick="toggleMenu()">
+        <div class="nav-icon">👤</div>
+        <div>Me</div>
+
+        <div class="dropdown" id="dropdown">
+          <a href="profile.html">👤 View Profile</a>
+          <a href="editprofile.html">✏️ Edit Profile</a>
+          <a href="applications.html" id="applicationsLink">📄 My Applications</a>
+          <a href="companies.html">🏢 Companies</a>
+          <a href="chatbot.html">🤖 Career Bot</a>
+          <a href="#" onclick="logout()">🚪 Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="info-banner">
+    <span id="bannerTitle">You Rock At Coding</span> —
+    <span id="bannerText">Let Career Flow bring you jobs, internships and opportunities.</span>
+  </div>
+
+  <main class="container">
+
+    <aside>
+      <div class="card profile-card">
+        <div class="cover">
+          <div class="avatar" id="avatarText">U</div>
+        </div>
+
+        <div class="profile-body">
+          <h3 id="profileName">User Name</h3>
+          <p id="userRole">Student / Job Seeker</p>
+
+          <div class="stats">
+            <div class="stat-row">
+              <span id="statLabel1">Who’s viewed your profile</span>
+              <span class="stat-value" id="statValue1">73</span>
+            </div>
+            <div class="stat-row">
+              <span id="statLabel2">Views of your posts</span>
+              <span class="stat-value" id="statValue2">35</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="left-links" id="leftLinks"></div>
+      </div>
+    </aside>
+
+    <section>
+      <div class="card composer">
+        <div class="composer-top">
+          <div class="composer-header">
+            <div class="composer-avatar" id="composerAvatar">U</div>
+            <div>
+              <div class="composer-name" id="composerName">User</div>
+              <div class="composer-sub" id="composerSub">Share an article, achievement, update or opportunity</div>
+            </div>
+          </div>
+
+          <textarea id="postInput" placeholder="What do you want to talk about?"></textarea>
+        </div>
+
+        <div class="composer-actions">
+          <div class="composer-left" id="composerActions"></div>
+          <button class="share-btn" id="shareBtn" onclick="createPost()">Share</button>
+        </div>
+      </div>
+
+      <div class="card post-card">
+        <div class="post-header">
+          <div class="post-user">
+            <div class="post-user-avatar">CF</div>
+            <div class="post-user-info">
+              <h4 id="welcomePostTitle">Career Flow</h4>
+              <p id="welcomePostSub">Professional career platform for students and job seekers</p>
+              <p>2 hrs</p>
+            </div>
+          </div>
+
+          <div class="three-dot">⋯</div>
+        </div>
+
+        <div class="post-text" id="welcomePostText">
+          🚀 Welcome to Career Flow.
+        </div>
+
+        <div class="post-meta" id="postMeta">18 Likes • 6 Comments</div>
+
+        <div class="post-actions-bar">
+          <button>👍🏻 Like</button>
+          <button>💬 Comment</button>
+          <button>🔁 Share</button>
+        </div>
+
+        <div class="comment-box">
+          <div class="comment-avatar" id="smallAvatar">U</div>
+          <input type="text" placeholder="Add a comment...">
+        </div>
+      </div>
+
+      <div class="card post-card promo-post">
+        <div class="post-header">
+          <div class="post-user">
+            <div class="post-user-avatar" id="promoAvatar">CF</div>
+            <div class="post-user-info">
+              <h4 id="promoTitle">Career Flow Opportunities</h4>
+              <p id="promoFollowers">112,345 followers</p>
+            </div>
+          </div>
+
+          <button style="padding:8px 16px;border:1px solid #93c5fd;background:#eff6ff;color:var(--primary);border-radius:6px;font-weight:700;cursor:pointer;">+ Follow</button>
+        </div>
+
+        <div class="post-text" id="promoText">
+          Explore opportunities.
+        </div>
+
+        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80" alt="Career Flow Opportunity">
+      </div>
+    </section>
+
+    <aside>
+      <div class="card right-card">
+        <h3 id="rightTitle">What you need to know now</h3>
+        <div id="newsList"></div>
+      </div>
+
+      <div class="card ad-box" style="margin-bottom:16px;">
+        <div class="ad-inner">
+          <div class="ad-top">
+            <h4 id="adTitle">LET’S CREATE BETTER CAREER OPPORTUNITIES.</h4>
+            <button id="adButton">Find out more</button>
+          </div>
+          <div class="ad-image">Career Flow</div>
+        </div>
+      </div>
+
+      <div class="card right-card">
+        <div class="suggestion-title" id="suggestionTitle">Follow new perspectives</div>
+        <div id="followList"></div>
+      </div>
+    </aside>
+
+  </main>
+
+  <script>
+    const rawUser = localStorage.getItem("loggedInUser");
+
+   // if (!rawUser) {
+   //   window.location.href = "login.html";
+   // }
+
+    function getLoggedInUser() {
+      try {
+        const parsed = JSON.parse(rawUser);
+        if (typeof parsed === "object" && parsed !== null) {
+          return {
+            fullname: parsed.fullname || parsed.name || "Career Flow User",
+            role: parsed.role || "Job Seeker",
+            userType: parsed.userType || parsed.type || "Job Seeker"
+          };
+        }
+      } catch (e) {
+        return {
+          fullname: rawUser,
+          role: "Job Seeker",
+          userType: "Job Seeker"
+        };
+      }
+
+      return {
+        fullname: "Career Flow User",
+        role: "Job Seeker",
+        userType: "Job Seeker"
+      };
+    }
+
+    const user = getLoggedInUser();
+    const fullName = user.fullname;
+    const role = user.role;
+    const userType = user.userType;
+
+    const initials = fullName
+      .split(" ")
+      .map(word => word.charAt(0))
+      .join("")
+      .substring(0, 2)
+      .toUpperCase();
+
+    document.getElementById("profileName").innerText = fullName;
+    document.getElementById("userRole").innerText = role + " • " + userType;
+    document.getElementById("composerName").innerText = fullName;
+    document.getElementById("avatarText").innerText = initials;
+    document.getElementById("smallAvatar").innerText = initials;
+    document.getElementById("composerAvatar").innerText = initials;
+
+    const leftLinks = document.getElementById("leftLinks");
+    const composerActions = document.getElementById("composerActions");
+    const newsList = document.getElementById("newsList");
+    const followList = document.getElementById("followList");
+
+    const dashboardData = {
+      "Student": {
+        bannerTitle: "You Rock At Coding",
+        bannerText: "Discover internships, build projects and prepare for your first role.",
+        jobNavLabel: "Internships",
+        statLabel1: "Who’s viewed your profile",
+        statValue1: "41",
+        statLabel2: "Internship matches",
+        statValue2: "12",
+        composerSub: "Share projects, achievements, learning updates or placement goals",
+        composerActions: ["📝 Publish a post", "📷 Photo", "🎓 Internship"],
+        welcomePostTitle: "Career Flow for Students",
+        welcomePostSub: "Placement support • Skill growth • Internships",
+        welcomePostText: "🎓 Build your profile, show your skills, apply for internships and connect with recruiters who are hiring students and freshers.",
+        promoTitle: "Student Opportunities",
+        promoFollowers: "28,540 followers",
+        promoText: "Explore internships, placement tips, project-based learning and fresher openings designed for students.",
+        rightTitle: "What students should know now",
+        adTitle: "BUILD SKILLS. GET INTERNSHIPS. GROW FASTER.",
+        adButton: "Explore now",
+        suggestionTitle: "Follow learning communities",
+        leftLinks: [
+          ["dashboard.html", "🏠 Dashboard"],
+          ["feed.html", "📰 Feed"],
+          ["internships.html", "🎓 Internships"],
+          ["jobs.html", "💼 Fresher Jobs"],
+          ["network.html", "👥 My Network"],
+          ["companies.html", "🏢 Companies"],
+          ["notifications.html", "🔔 Notifications"],
+          ["chatbot.html", "🤖 Career Bot"]
+        ],
+        news: [
+          ["Top internships are open for final year students", "Top News"],
+          ["How projects improve placement chances", "28 new posts"],
+          ["Companies hiring freshers in tech roles", "Updated 10 mins ago"],
+          ["Resume tips for first-time applicants", "Trending • 12k views"]
+        ],
+        follows: [
+          ["JV", "Java Developers", "Popular for placement preparation"],
+          ["WD", "Web Development", "Frontend and backend learning"],
+          ["DS", "Data Science Hub", "Skills and opportunities"]
+        ]
+      },
+
+      "Job Seeker": {
+        bannerTitle: "Your next job starts here",
+        bannerText: "Find opportunities, build connections and make your profile recruiter-ready.",
+        jobNavLabel: "Jobs",
+        statLabel1: "Recruiter views",
+        statValue1: "73",
+        statLabel2: "Job matches",
+        statValue2: "35",
+        composerSub: "Share updates, availability, achievements or job search progress",
+        composerActions: ["📝 Publish a post", "📷 Photo", "💼 Opportunity"],
+        welcomePostTitle: "Career Flow",
+        welcomePostSub: "Professional career platform for job seekers",
+        welcomePostText: "🚀 Welcome to Career Flow. Explore jobs, connect with companies, build your profile and move one step closer to your dream career.",
+        promoTitle: "Career Flow Recruiters",
+        promoFollowers: "112,345 followers",
+        promoText: "Discover fresher jobs, hiring trends, company openings and profile-building tools — all in one place.",
+        rightTitle: "What you need to know now",
+        adTitle: "LET’S CREATE BETTER CAREER OPPORTUNITIES.",
+        adButton: "Find out more",
+        suggestionTitle: "Follow new perspectives",
+        leftLinks: [
+          ["dashboard.html", "🏠 Dashboard"],
+          ["feed.html", "📰 Feed"],
+          ["jobs.html", "💼 Jobs"],
+          ["internships.html", "🎓 Internships"],
+          ["network.html", "👥 My Network"],
+          ["companies.html", "🏢 Companies"],
+          ["notifications.html", "🔔 Notifications"],
+          ["chatbot.html", "🤖 Career Bot"]
+        ],
+        news: [
+          ["Top companies are hiring freshers in tech and analytics", "Top News"],
+          ["What internship openings mean for final year students", "28 new posts"],
+          ["How building projects can improve your placement chances", "Updated 10 mins ago"],
+          ["Career growth in Java, Web Development and Data roles", "Trending • 1.2M views"]
+        ],
+        follows: [
+          ["JD", "Java Developers", "Popular in software industry"],
+          ["RH", "HR Recruiters", "Career and hiring guidance"],
+          ["DS", "Data Science Hub", "Learning and opportunities"]
+        ]
+      },
+
+      "Recruiter": {
+        bannerTitle: "Hire smarter with Career Flow",
+        bannerText: "Discover talent, post opportunities and connect with the right candidates.",
+        jobNavLabel: "Post Jobs",
+        statLabel1: "Candidates viewed",
+        statValue1: "89",
+        statLabel2: "Job responses",
+        statValue2: "24",
+        composerSub: "Share hiring updates, company openings and recruiter announcements",
+        composerActions: ["📝 Publish a post", "📷 Photo", "🏢 Job Opening"],
+        welcomePostTitle: "Career Flow for Recruiters",
+        welcomePostSub: "Hiring support • Talent network • Company visibility",
+        welcomePostText: "🏢 Post opportunities, reach job seekers faster and build your recruiter presence with Career Flow.",
+        promoTitle: "Recruiter Community",
+        promoFollowers: "56,120 followers",
+        promoText: "Promote jobs, discover candidates and improve hiring reach with recruiter-focused tools.",
+        rightTitle: "What recruiters should know now",
+        adTitle: "FIND BETTER CANDIDATES. BUILD FASTER TEAMS.",
+        adButton: "Post a job",
+        suggestionTitle: "Follow hiring communities",
+        leftLinks: [
+          ["dashboard.html", "🏠 Dashboard"],
+          ["feed.html", "📰 Feed"],
+          ["jobs.html", "💼 Post Jobs"],
+          ["network.html", "👥 Talent Network"],
+          ["companies.html", "🏢 Companies"],
+          ["recruiters.html", "👤 Recruiters"],
+          ["notifications.html", "🔔 Notifications"],
+          ["chatbot.html", "🤖 Career Bot"]
+        ],
+        news: [
+          ["More freshers are applying for software roles", "Hiring Trend"],
+          ["How recruiters can improve candidate response rate", "Top Insight"],
+          ["Campus hiring season is becoming more competitive", "Updated 20 mins ago"],
+          ["Best practices for shortlisting candidates faster", "Trending • 18k views"]
+        ],
+        follows: [
+          ["HR", "HR Leaders", "Recruitment and hiring insights"],
+          ["TA", "Talent Acquisition", "Hiring strategy community"],
+          ["CP", "Campus Placements", "Student hiring network"]
+        ]
+      },
+
+      "Employee": {
+        bannerTitle: "Grow your professional network",
+        bannerText: "Share insights, mentor others and explore career growth opportunities.",
+        jobNavLabel: "Jobs",
+        statLabel1: "Profile views",
+        statValue1: "52",
+        statLabel2: "Post engagement",
+        statValue2: "18",
+        composerSub: "Share insights, work updates, achievements or referrals",
+        composerActions: ["📝 Publish a post", "📷 Photo", "🚀 Update"],
+        welcomePostTitle: "Career Flow Community",
+        welcomePostSub: "Professional networking and career growth",
+        welcomePostText: "👥 Build meaningful professional connections, share experience and help others grow in their careers.",
+        promoTitle: "Professional Growth",
+        promoFollowers: "45,890 followers",
+        promoText: "Expand your network, explore referrals and stay updated with professional growth opportunities.",
+        rightTitle: "What professionals should know now",
+        adTitle: "GROW YOUR NETWORK. GROW YOUR CAREER.",
+        adButton: "Learn more",
+        suggestionTitle: "Follow professional circles",
+        leftLinks: [
+          ["dashboard.html", "🏠 Dashboard"],
+          ["feed.html", "📰 Feed"],
+          ["jobs.html", "💼 Jobs"],
+          ["network.html", "👥 My Network"],
+          ["companies.html", "🏢 Companies"],
+          ["notifications.html", "🔔 Notifications"],
+          ["chatbot.html", "🤖 Career Bot"]
+        ],
+        news: [
+          ["Professionals are switching to product and cloud roles", "Top News"],
+          ["How referrals increase interview chances", "Updated 15 mins ago"],
+          ["Upskilling trends in software careers", "Trending • 44k views"],
+          ["Why active networking matters in 2026", "Career Insight"]
+        ],
+        follows: [
+          ["PN", "Professional Network", "Career growth connections"],
+          ["CL", "Career Leaders", "Advice and experience"],
+          ["ST", "Software Trends", "Industry updates"]
+        ]
+      }
+    };
+
+    const selected = dashboardData[userType] || dashboardData["Job Seeker"];
+
+    document.getElementById("bannerTitle").innerText = selected.bannerTitle;
+    document.getElementById("bannerText").innerText = selected.bannerText;
+    document.getElementById("jobNavLabel").innerText = selected.jobNavLabel;
+    document.getElementById("statLabel1").innerText = selected.statLabel1;
+    document.getElementById("statValue1").innerText = selected.statValue1;
+    document.getElementById("statLabel2").innerText = selected.statLabel2;
+    document.getElementById("statValue2").innerText = selected.statValue2;
+    document.getElementById("composerSub").innerText = selected.composerSub;
+    document.getElementById("welcomePostTitle").innerText = selected.welcomePostTitle;
+    document.getElementById("welcomePostSub").innerText = selected.welcomePostSub;
+    document.getElementById("welcomePostText").innerText = selected.welcomePostText;
+    document.getElementById("promoTitle").innerText = selected.promoTitle;
+    document.getElementById("promoFollowers").innerText = selected.promoFollowers;
+    document.getElementById("promoText").innerText = selected.promoText;
+    document.getElementById("rightTitle").innerText = selected.rightTitle;
+    document.getElementById("adTitle").innerText = selected.adTitle;
+    document.getElementById("adButton").innerText = selected.adButton;
+    document.getElementById("suggestionTitle").innerText = selected.suggestionTitle;
+
+    if (userType === "Recruiter") {
+      document.getElementById("applicationsLink").innerText = "📄 Posted Jobs";
+      document.getElementById("applicationsLink").href = "postedjobs.html";
+    }
+
+    selected.leftLinks.forEach(link => {
+      const a = document.createElement("a");
+      a.href = link[0];
+      a.innerText = link[1];
+      leftLinks.appendChild(a);
+    });
+
+    selected.composerActions.forEach(item => {
+      const span = document.createElement("span");
+      span.innerText = item;
+      composerActions.appendChild(span);
+    });
+
+    selected.news.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "news-item";
+      div.innerHTML = `<h4>${item[0]}</h4><p>${item[1]}</p>`;
+      newsList.appendChild(div);
+    });
+
+    selected.follows.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "follow-item";
+      div.innerHTML = `
+        <div class="follow-left">
+          <div class="follow-avatar">${item[0]}</div>
+          <div class="follow-info">
+            <h4>${item[1]}</h4>
+            <p>${item[2]}</p>
+          </div>
+        </div>
+        <button class="follow-btn">+</button>
+      `;
+      followList.appendChild(div);
+    });
+
+    function toggleMenu() {
+      const menu = document.getElementById("dropdown");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    window.addEventListener("click", function(e) {
+      const menu = document.getElementById("dropdown");
+      const meMenu = document.querySelector(".me-menu");
+      if (!meMenu.contains(e.target)) {
+        menu.style.display = "none";
+      }
+    });
+
+    //function logout() {
+   //   localStorage.removeItem("loggedInUser");
+    //  window.location.href = "login.html";
+   // }
+
+    const postInput = document.getElementById("postInput");
+    const shareBtn = document.getElementById("shareBtn");
+
+    postInput.addEventListener("input", function() {
+      if (postInput.value.trim() !== "") {
+        shareBtn.classList.add("active");
+      } else {
+        shareBtn.classList.remove("active");
+      }
+    });
+
+    function createPost() {
+      const text = postInput.value.trim();
+
+      if (text === "") {
+        alert("Please write something before sharing.");
+        return;
+      }
+
+      if (userType === "Recruiter") {
+        alert("Recruiter update shared successfully.");
+      } else if (userType === "Student") {
+        alert("Student update shared successfully.");
+      } else {
+        alert("Post shared successfully.");
+      }
+
+      postInput.value = "";
+      shareBtn.classList.remove("active");
+    }
+
+    const brandLogo = document.getElementById("brandLogo");
+    const brandFallback = document.getElementById("brandFallback");
+
+    brandLogo.onerror = function() {
+      brandLogo.style.display = "none";
+      brandFallback.style.display = "flex";
+    };
+  </script>
+
+</body>
+</html>

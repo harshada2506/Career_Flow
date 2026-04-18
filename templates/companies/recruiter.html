@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruiter Dashboard | Career Flow</title>
+
+<style>
+:root{
+    --primary:#0a66c2;
+    --light:#f3f6f8;
+    --dark:#1f2937;
+    --gray:#6b7280;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    background:var(--light);
+}
+
+/* Header */
+header{
+    background:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+header h2{
+    color:var(--primary);
+}
+
+header button{
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+/* Container */
+.container{
+    max-width:1000px;
+    margin:30px auto;
+    padding:20px;
+}
+
+/* Profile Card */
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.05);
+}
+
+.card h3{
+    margin-bottom:15px;
+    color:var(--dark);
+}
+
+.info{
+    margin-bottom:8px;
+    color:var(--gray);
+}
+
+/* Actions */
+.actions button{
+    margin-top:10px;
+    margin-right:10px;
+    padding:8px 14px;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+}
+
+.post-btn{
+    background:var(--primary);
+    color:white;
+}
+
+.manage-btn{
+    background:#10b981;
+    color:white;
+}
+
+.view-btn{
+    background:#6366f1;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>Career Flow - Recruiter Panel</h2>
+    <button onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+
+    <!-- Recruiter Profile -->
+    <div class="card">
+        <h3>Recruiter Profile</h3>
+        <div class="info"><strong>Name:</strong> <span id="recruiterName"></span></div>
+        <div class="info"><strong>Email:</strong> <span id="recruiterEmail"></span></div>
+        <div class="info"><strong>Company:</strong> <span id="companyName"></span></div>
+        <div class="info"><strong>Industry:</strong> <span id="industryType"></span></div>
+        <div class="info"><strong>Location:</strong> <span id="companyLocation"></span></div>
+    </div>
+
+    <!-- Recruiter Actions -->
+    <div class="card">
+        <h3>Recruiter Controls</h3>
+        <div class="actions">
+            <button class="post-btn" onclick="goToPostJob()">Post New Job</button>
+            <button class="manage-btn" onclick="goToManageJobs()">Manage Jobs</button>
+            <button class="view-btn" onclick="goToApplications()">View Applications</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+/* ====== SESSION CHECK ====== */
+
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+/*if (!loggedInUser) {
+    window.location.href = "../authenticationmodule/login.html";
+}/*
+
+if (loggedInUser.role !== "recruiter") {
+    alert("Access Denied! Recruiter login required.");
+    window.location.href = "home.html";
+}
+
+/* ====== LOAD DATA ====== */
+
+document.getElementById("recruiterName").innerText = loggedInUser.fullname;
+document.getElementById("recruiterEmail").innerText = loggedInUser.email;
+document.getElementById("companyName").innerText =
+loggedInUser.companyName || "Not Provided";
+document.getElementById("industryType").innerText =
+loggedInUser.industry || "Not Provided";
+document.getElementById("companyLocation").innerText =
+loggedInUser.location || "Not Provided";
+
+/* ====== ACTION BUTTONS ====== */
+
+function goToPostJob(){
+    window.location.href = "../jobs/post_job.html";
+}
+
+function goToManageJobs(){
+    window.location.href = "../jobs/jobs.html";
+}
+
+function goToApplications(){
+    window.location.href = "../jobs/my_applications.html";
+}
+
+/* ====== LOGOUT ====== */
+
+function logout(){
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "../authenticationmodule/login.html";
+}
+
+</script>
+
+</body>
+</html>

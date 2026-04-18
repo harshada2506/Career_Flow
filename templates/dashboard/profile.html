@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Profile | Career Flow</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+ --primary:#0a66c2;
+ --light:#f3f6f8;
+ --card:#ffffff;
+ --border:#e5e7eb;
+ --text:#1f2937;
+ --muted:#6b7280;
+}
+
+body{
+ font-family:'Inter',sans-serif;
+ background:var(--light);
+ margin:0;
+}
+
+.container{
+ max-width:900px;
+ margin:30px auto;
+ display:flex;
+ flex-direction:column;
+ gap:20px;
+}
+
+.card{
+ background:var(--card);
+ padding:20px;
+ border-radius:16px;
+ box-shadow:0 5px 20px rgba(0,0,0,0.05);
+ border:1px solid var(--border);
+}
+
+.profile-header{
+ display:flex;
+ align-items:center;
+ gap:20px;
+}
+
+.avatar{
+ width:80px;
+ height:80px;
+ border-radius:50%;
+ background:#cfe3f8;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:28px;
+ font-weight:700;
+ color:#084b94;
+ overflow:hidden;
+}
+
+.avatar img{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+}
+
+.name{
+ font-size:22px;
+ font-weight:700;
+}
+
+.headline{
+ color:var(--muted);
+ margin-top:4px;
+}
+
+.section-title{
+ font-weight:700;
+ margin-bottom:10px;
+}
+
+.tag{
+ display:inline-block;
+ background:#eef6ff;
+ color:var(--primary);
+ padding:6px 10px;
+ border-radius:20px;
+ margin:4px;
+ font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- PROFILE HEADER -->
+<div class="card">
+ <div class="profile-header">
+  <div class="avatar" id="avatar">U</div>
+  <div>
+   <div class="name" id="name">Loading...</div>
+   <div class="headline" id="headline">...</div>
+  </div>
+ </div>
+</div>
+
+<!-- ABOUT -->
+<div class="card">
+ <div class="section-title">About</div>
+ <div id="about">Loading...</div>
+</div>
+
+<!-- SKILLS -->
+<div class="card">
+ <div class="section-title">Skills</div>
+ <div id="skills"></div>
+</div>
+
+<!-- EDUCATION -->
+<div class="card">
+ <div class="section-title">Education</div>
+ <div id="education"></div>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="card">
+ <div class="section-title">Experience</div>
+ <div id="experience">Not added</div>
+</div>
+
+<!-- PROJECTS -->
+<div class="card">
+ <div class="section-title">Projects</div>
+ <div id="projects">Not added</div>
+</div>
+
+</div>
+
+<script>
+
+const API = "http://127.0.0.1:8000";
+const token = localStorage.getItem("token");
+
+// 🔐 Check login
+if(!token){
+ alert("Please login first");
+ window.location.href = "login.html";
+}
+
+// GET INITIALS
+function getInitials(name){
+ if(!name) return "U";
+ return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2);
+}
+
+// LOAD PROFILE
+async function loadProfile(){
+ try{
+  const res = await fetch(API + "/me", {
+   headers:{
+    "Authorization": "Bearer " + token
+   }
+  });
+
+  const data = await res.json();
+
+  // BASIC INFO
+  document.getElementById("name").innerText = data.fullname || "User";
+  document.getElementById("headline").innerText = data.headline || "No headline";
+  document.getElementById("about").innerText = data.bio || "No bio available";
+  document.getElementById("education").innerText = data.education || "Not added";
+
+  // PROFILE IMAGE OR INITIALS
+  if(data.photo){
+    document.getElementById("avatar").innerHTML =
+      `<img src="${API}/${data.photo}">`;
+  }else{
+    document.getElementById("avatar").innerText = getInitials(data.fullname);
+  }
+
+  // SKILLS
+  let skillsHTML = "";
+  if(data.skills){
+    data.skills.split(",").forEach(skill => {
+      skillsHTML += `<span class="tag">${skill.trim()}</span>`;
+    });
+  }
+  document.getElementById("skills").innerHTML = skillsHTML || "No skills";
+
+ }catch(err){
+  console.error(err);
+  alert("Error loading profile");
+ }
+}
+
+loadProfile();
+
+</script>
+
+</body>
+</html>

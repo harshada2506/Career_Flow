@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account | Career Flow</title>
+
+<!-- International Phone Input CSS -->
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css"/>
+
+<style>
+:root {
+    --primary: #0a66c2;
+    --dark: #1f2937;
+    --gray: #6b7280;
+    --light: #f9fafb;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 520px;
+    background: white;
+    border-radius: 18px;
+    padding: 45px;
+    box-shadow: 0 22px 55px rgba(0,0,0,0.08);
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo img {
+    width: 80px;
+}
+
+.logo h1 {
+    color:#1F4E79;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+h2 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 25px;
+}
+
+label {
+    font-size: 13px;
+    color: var(--dark);
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    border: 1.6px solid #d1d5db;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+button {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #084b94;
+}
+
+.message {
+    font-size: 13px;
+    margin-top: 10px;
+    text-align: center;
+    display: none;
+}
+
+.error { color: #dc2626; }
+.success { color: #047857; }
+
+.links {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.links a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.company-section {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="logo">
+<img src="../photo/logo.jpg" alt="Career Flow">
+<h1>Career Flow</h1>
+</div>
+
+<h2>Create Your Account</h2>
+
+<form onsubmit="handleRegister(event)">
+
+<label>Full Name</label>
+<input type="text" id="fullname" required>
+
+<label>Email Address</label>
+<input type="email" id="email" required>
+
+<label>Phone Number</label>
+<input type="tel" id="phone" required>
+
+<!-- Password on its own line -->
+<div>
+<label>Password</label>
+<input type="password" id="password" required>
+</div>
+
+<!-- Confirm Password on next line -->
+<div>
+<label>Confirm Password</label>
+<input type="password" id="confirmPassword" required>
+</div>
+
+<label>Account Type</label>
+<select id="role" onchange="toggleCompanyFields()" required>
+<option value="">Select Account Type</option>
+<option value="student">Student</option>
+<option value="employee">Employee</option>
+<option value="jobseeker">Job Seeker</option>
+<option value="company">Company</option>
+</select>
+
+<!-- Company Extra Fields -->
+<div id="companyFields" class="company-section">
+
+<label>Company Name</label>
+<input type="text" id="companyName">
+
+<label>HR Name</label>
+<input type="text" id="hrName">
+
+<label>Industry Type</label>
+<input type="text" id="industry">
+
+<label>Company Location</label>
+<input type="text" id="location">
+
+</div>
+
+<button type="submit">Register</button>
+
+<div id="errorMsg" class="message error"></div>
+<div id="successMsg" class="message success"></div>
+
+</form>
+
+<div class="links">
+Already have an account? <a href="login.html">Sign in</a>
+</div>
+
+</div>
+
+<!-- International Phone Input JS -->
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+
+<script>
+const phoneInput = document.querySelector("#phone");
+
+const iti = window.intlTelInput(phoneInput, {
+initialCountry: "auto",
+geoIpLookup: function(callback) {
+    fetch("https://ipapi.co/json")
+    .then(res => res.json())
+    .then(data => callback(data.country_code))
+    .catch(() => callback("us"));
+},
+separateDialCode: true,
+utilsScript:
+"https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
+});
+
+function toggleCompanyFields() {
+const role = document.getElementById("role").value;
+document.getElementById("companyFields").style.display =
+role === "company" ? "block" : "none";
+}
+
+async function handleRegister(event) {
+event.preventDefault();
+
+const fullname = document.getElementById("fullname").value.trim();
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value;
+const confirmPassword = document.getElementById("confirmPassword").value;
+const role = document.getElementById("role").value;
+
+const errorMsg = document.getElementById("errorMsg");
+const successMsg = document.getElementById("successMsg");
+
+errorMsg.style.display = "none";
+successMsg.style.display = "none";
+
+if (fullname.length < 3) {
+errorMsg.innerText = "Full name must be at least 3 characters.";
+errorMsg.style.display = "block";
+return;
+}
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!emailRegex.test(email)) {
+errorMsg.innerText = "Enter a valid email address.";
+errorMsg.style.display = "block";
+return;
+}
+
+if (!iti.isValidNumber()) {
+errorMsg.innerText = "Enter a valid international phone number.";
+errorMsg.style.display = "block";
+return;
+}
+
+const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+if (!strongPassword.test(password)) {
+errorMsg.innerText =
+"Password must include uppercase, lowercase, number & minimum 8 characters.";
+errorMsg.style.display = "block";
+return;
+}
+
+if (password !== confirmPassword) {
+errorMsg.innerText = "Passwords do not match.";
+errorMsg.style.display = "block";
+return;
+}
+
+if (role === "") {
+errorMsg.innerText = "Please select account type.";
+errorMsg.style.display = "block";
+return;
+}
+
+const API_BASE = "http://127.0.0.1:8000";
+
+try {
+    const payload = {
+        fullname: fullname,
+        email: email,
+        phone: iti.getNumber(),
+        password: password,
+        role: role
+    };
+
+    console.log("Sending payload:", payload);
+
+    const res = await fetch(API_BASE + "/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const raw = await res.text();
+    console.log("Backend response:", raw);
+
+    let data = {};
+    try {
+        data = JSON.parse(raw);
+    } catch (e) {
+        data = { detail: raw };
+    }
+
+    if (!res.ok) {
+        errorMsg.innerText = data.detail || "Registration failed. Try again.";
+        errorMsg.style.display = "block";
+        return;
+    }
+
+    localStorage.setItem("pending_email", email);
+
+    successMsg.innerText = "OTP sent to your email. Please verify.";
+    successMsg.style.display = "block";
+
+    setTimeout(() => {
+        window.location.href = "verify_otp.html";
+    }, 1500);
+
+} catch (e) {
+    console.error("Fetch error:", e);
+    errorMsg.innerText = "Backend not reachable. Start server: uvicorn main:app --reload";
+    errorMsg.style.display = "block";
+}
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Details | Career Flow</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#0a66c2;
+  --light:#f3f4f6;
+  --gray:#6b7280;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body{
+  background:var(--light);
+}
+
+header{
+  background:white;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+.logo{
+  font-weight:700;
+  color:var(--primary);
+}
+
+.back{
+  text-decoration:none;
+  color:var(--primary);
+  font-weight:600;
+}
+
+.container{
+  max-width:900px;
+  margin:30px auto;
+}
+
+.card{
+  background:white;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.company{
+  color:var(--gray);
+  margin-bottom:15px;
+}
+
+.tags{
+  margin:10px 0 20px;
+}
+
+.tag{
+  display:inline-block;
+  background:#e0ecfb;
+  color:var(--primary);
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+  margin-right:6px;
+  margin-bottom:6px;
+}
+
+.section{
+  margin-bottom:20px;
+}
+
+.section h3{
+  margin-bottom:8px;
+}
+
+.apply-btn{
+  background:var(--primary);
+  color:white;
+  padding:10px 18px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.disabled{
+  background:gray;
+  cursor:not-allowed;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Career Flow</div>
+  <a href="jobs.html" class="back">← Back to Jobs</a>
+</header>
+
+<div class="container">
+  <div class="card">
+    <h2 id="jobTitle"></h2>
+    <div class="company" id="companyInfo"></div>
+
+    <div class="tags" id="skillTags"></div>
+
+    <div class="section">
+      <h3>Job Description</h3>
+      <p id="jobDescription"></p>
+    </div>
+
+    <div class="section">
+      <h3>Responsibilities</h3>
+      <ul id="responsibilities"></ul>
+    </div>
+
+    <div class="section">
+      <h3>Qualifications</h3>
+      <ul id="qualifications"></ul>
+    </div>
+
+    <button id="applyBtn" class="apply-btn" onclick="applyJob()">Apply Now</button>
+  </div>
+</div>
+
+<script>
+
+/* SESSION CHECK */
+if(!localStorage.getItem("loggedInUser")){
+  window.location.href="../authenticationmodule/login.html";
+}
+
+/* JOB DATABASE (Static for now) */
+const jobsData = {
+  "software-developer": {
+    title: "Software Developer Intern",
+    company: "TCS • Pune • ₹3-4 LPA • Internship",
+    skills: ["Java","SQL","DSA"],
+    description: "Work on backend systems and assist senior developers.",
+    responsibilities: [
+      "Develop Java modules",
+      "Fix bugs and improve performance",
+      "Collaborate with team"
+    ],
+    qualifications: [
+      "B.Sc / B.Tech CS",
+      "Basic programming knowledge"
+    ]
+  },
+
+  "web-developer": {
+    title: "Junior Web Developer",
+    company: "Infosys • Bangalore • ₹4-6 LPA • 0-2 Years",
+    skills: ["HTML","CSS","JavaScript"],
+    description: "Develop responsive web applications.",
+    responsibilities: [
+      "Build frontend UI",
+      "Integrate APIs",
+      "Test cross-browser compatibility"
+    ],
+    qualifications: [
+      "Basic web development knowledge",
+      "Strong problem solving"
+    ]
+  }
+};
+
+/* GET JOB FROM URL */
+const params = new URLSearchParams(window.location.search);
+const jobKey = params.get("role");
+
+if(!jobKey || !jobsData[jobKey]){
+  document.querySelector(".card").innerHTML = "<h2>Job Not Found</h2>";
+}
+else{
+
+  const job = jobsData[jobKey];
+
+  document.getElementById("jobTitle").innerText = job.title;
+  document.getElementById("companyInfo").innerText = job.company;
+  document.getElementById("jobDescription").innerText = job.description;
+
+  /* Skills */
+  let skillsHTML = "";
+  job.skills.forEach(skill => {
+    skillsHTML += `<span class="tag">${skill}</span>`;
+  });
+  document.getElementById("skillTags").innerHTML = skillsHTML;
+
+  /* Responsibilities */
+  let resHTML = "";
+  job.responsibilities.forEach(r => {
+    resHTML += `<li>${r}</li>`;
+  });
+  document.getElementById("responsibilities").innerHTML = resHTML;
+
+  /* Qualifications */
+  let qualHTML = "";
+  job.qualifications.forEach(q => {
+    qualHTML += `<li>${q}</li>`;
+  });
+  document.getElementById("qualifications").innerHTML = qualHTML;
+
+  /* Disable if already applied */
+  let applications = JSON.parse(localStorage.getItem("applications")) || [];
+  if(applications.some(app => app.job === job.title)){
+    let btn = document.getElementById("applyBtn");
+    btn.innerText = "Already Applied";
+    btn.classList.add("disabled");
+    btn.disabled = true;
+  }
+}
+
+/* APPLY FUNCTION */
+function applyJob(){
+
+  let jobTitle = document.getElementById("jobTitle").innerText;
+  let applications = JSON.parse(localStorage.getItem("applications")) || [];
+
+  applications.push({ job: jobTitle });
+  localStorage.setItem("applications", JSON.stringify(applications));
+
+  alert("Application Submitted Successfully!");
+  window.location.href="my_applications.html";
+}
+
+</script>
+
+</body>
+</html>

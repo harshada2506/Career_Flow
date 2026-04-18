@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jobs | Career Flow</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#0a66c2;
+  --light:#f3f4f6;
+  --gray:#6b7280;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body{
+  background:var(--light);
+}
+
+header{
+  background:white;
+  padding:15px 25px;
+  display:flex;
+  justify-content:space-between;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+.logo{
+  font-weight:700;
+  color:var(--primary);
+}
+
+.container{
+  display:grid;
+  grid-template-columns: 35% 65%;
+  height:90vh;
+}
+
+/* LEFT JOB LIST */
+.job-list{
+  background:white;
+  border-right:1px solid #ddd;
+  overflow-y:auto;
+}
+
+.job-item{
+  padding:18px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+}
+
+.job-item:hover{
+  background:#f0f7ff;
+}
+
+.job-title{
+  font-weight:600;
+}
+
+.company{
+  color:var(--gray);
+  font-size:14px;
+}
+
+/* RIGHT DETAILS */
+.job-details{
+  padding:25px;
+  overflow-y:auto;
+}
+
+.apply-btn{
+  background:var(--primary);
+  color:white;
+  padding:10px 16px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:15px;
+}
+
+.disabled{
+  background:gray;
+  cursor:not-allowed;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:white;
+  padding:25px;
+  width:400px;
+  border-radius:12px;
+}
+
+.modal-content input, textarea{
+  width:100%;
+  padding:8px;
+  margin-bottom:10px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.error{
+  color:red;
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.submit-btn{
+  background:var(--primary);
+  color:white;
+  padding:8px 12px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Career Flow</div>
+</header>
+
+<div class="container">
+
+<!-- LEFT JOB LIST -->
+<div class="job-list">
+
+<div class="job-item" onclick="showDetails('Software Developer Intern','TCS','Internship for CS students.','Java, SQL')">
+  <div class="job-title">Software Developer Intern</div>
+  <div class="company">TCS • Pune</div>
+</div>
+
+<div class="job-item" onclick="showDetails('Junior Web Developer','Infosys','Entry level web development role.','HTML, CSS, JS')">
+  <div class="job-title">Junior Web Developer</div>
+  <div class="company">Infosys • Bangalore</div>
+</div>
+
+</div>
+
+<!-- RIGHT JOB DETAILS -->
+<div class="job-details" id="jobDetails">
+<h2>Select a job to view details</h2>
+</div>
+
+</div>
+
+<!-- APPLY MODAL -->
+<div class="modal" id="applyModal">
+<div class="modal-content">
+<h3>Apply for Job</h3>
+
+<div class="error" id="formError"></div>
+
+<input type="text" id="fullName" placeholder="Full Name">
+<input type="text" id="email" placeholder="Email">
+<input type="text" id="phone" placeholder="10 Digit Mobile">
+<textarea id="coverLetter" placeholder="Cover Letter (Optional)"></textarea>
+
+<button class="submit-btn" onclick="submitApplication()">Submit Application</button>
+</div>
+</div>
+
+<script>
+
+/* Session check 
+if(!localStorage.getItem("loggedInUser")){
+  window.location.href="../authenticationmodule/login.html";
+}
+*/
+let selectedJob = "";
+
+function showDetails(title, company, desc, skills){
+
+  selectedJob = title;
+
+  let applications = JSON.parse(localStorage.getItem("applications")) || [];
+  let alreadyApplied = applications.some(app => app.job === title);
+
+  document.getElementById("jobDetails").innerHTML = `
+    <h2>${title}</h2>
+    <p><strong>Company:</strong> ${company}</p>
+    <p><strong>Description:</strong> ${desc}</p>
+    <p><strong>Required Skills:</strong> ${skills}</p>
+    <button class="apply-btn ${alreadyApplied ? 'disabled' : ''}" 
+    onclick="${alreadyApplied ? '' : 'openApply()'}">
+    ${alreadyApplied ? 'Already Applied' : 'Apply'}
+    </button>
+  `;
+}
+
+function openApply(){
+  document.getElementById("applyModal").style.display="flex";
+}
+
+function submitApplication(){
+
+  let name = document.getElementById("fullName").value.trim();
+  let email = document.getElementById("email").value.trim();
+  let phone = document.getElementById("phone").value.trim();
+  let error = document.getElementById("formError");
+
+  let namePattern = /^[A-Za-z ]{3,}$/;
+  let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+  let phonePattern = /^[0-9]{10}$/;
+
+  if(!namePattern.test(name)){
+    error.innerText="Enter valid name (min 3 letters)";
+    return;
+  }
+
+  if(!emailPattern.test(email)){
+    error.innerText="Enter valid email address";
+    return;
+  }
+
+  if(!phonePattern.test(phone)){
+    error.innerText="Enter valid 10-digit mobile number";
+    return;
+  }
+
+  error.innerText="";
+
+  let applications = JSON.parse(localStorage.getItem("applications")) || [];
+  applications.push({job:selectedJob, name:name, email:email});
+  localStorage.setItem("applications", JSON.stringify(applications));
+
+  alert("Application Submitted Successfully!");
+
+  document.getElementById("applyModal").style.display="none";
+  window.location.reload();
+}
+
+</script>
+
+</body>
+</html>

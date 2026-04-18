@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Flow | My Network</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body{
+ background:#f3f6f8;
+ font-family:"Segoe UI",Roboto,sans-serif;
+}
+
+/* Top Bar */
+.topbar{
+ background:white;
+ padding:15px 30px;
+ box-shadow:0 10px 25px rgba(0,0,0,0.05);
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.topbar h4{margin:0;font-weight:600;}
+
+.search-box{
+ width:300px;
+}
+
+/* Section */
+.section{
+ max-width:1100px;
+ margin:30px auto;
+}
+
+.card-network{
+ border:none;
+ border-radius:16px;
+ box-shadow:0 15px 35px rgba(0,0,0,0.06);
+ transition:0.3s;
+}
+.card-network:hover{transform:translateY(-4px);}
+
+.avatar{
+ width:70px;
+ height:70px;
+ border-radius:50%;
+}
+
+.mutual{
+ font-size:12px;
+ color:#6b7280;
+}
+
+.connect-btn{
+ border-radius:20px;
+ padding:6px 18px;
+}
+
+.tab-pane{margin-top:20px;}
+</style>
+</head>
+
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+ <h4>👥 My Network</h4>
+ <input type="text" class="form-control search-box" placeholder="Search professionals, recruiters...">
+</div>
+
+<div class="section">
+
+<!-- Tabs -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#suggestions">Suggestions</button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#connections">My Connections</button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#requests">Requests</button>
+  </li>
+</ul>
+
+<div class="tab-content">
+
+<!-- Suggestions -->
+<div class="tab-pane fade show active" id="suggestions">
+<div class="row g-4"></div>
+</div>
+
+<!-- My Connections -->
+<div class="tab-pane fade" id="connections">
+<div class="list-group mt-3"></div>
+</div>
+
+<!-- Requests -->
+<div class="tab-pane fade" id="requests">
+<div class="list-group mt-3"></div>
+</div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const API = "http://127.0.0.1:8000";
+const token = localStorage.getItem("access_token");
+const currentUserId = localStorage.getItem("user_id");
+
+/* SUGGESTIONS */
+async function loadSuggestions(){
+  const res = await fetch(API+"/users",{headers:{Authorization:"Bearer "+token}});
+  let users = await res.json();
+
+// remove logged-in user
+users = users.filter(u => u.id != Number(currentUserId));
+  const container = document.querySelector("#suggestions .row");
+  container.innerHTML = "";
+
+  users.forEach(u=>{
+    const img = u.profile_pic || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+    container.innerHTML += `
+    <div class="col-md-4">
+      <div class="card card-network p-4 text-center">
+        <img src="${img}" class="avatar mx-auto mb-2">
+        <h6 class="mb-0">${u.fullname}</h6>
+        <div class="text-muted small">${u.headline || "Professional"}</div>
+        <div class="mutual">New user</div>
+        <button class="btn btn-primary connect-btn mt-3" onclick="connectUser(${u.id})">Connect</button>
+      </div>
+    </div>`;
+  });
+}
+
+/* CONNECT */
+async function connectUser(id){
+  await fetch(API+"/follow/"+id,{
+    method:"POST",
+    headers:{Authorization:"Bearer "+token}
+  });
+  alert("Connection request sent!");
+}
+
+/* CONNECTIONS */
+async function loadConnections(){
+  const res = await fetch(API+"/connections",{headers:{Authorization:"Bearer "+token}});
+  const users = await res.json();
+
+  const box = document.querySelector("#connections .list-group");
+  box.innerHTML = "";
+
+  users.forEach(u=>{
+    const img = u.profile_pic || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+    box.innerHTML += `
+    <div class="list-group-item d-flex align-items-center">
+      <img src="${img}" class="avatar me-3">
+      <div class="flex-grow-1">
+        <strong>${u.fullname}</strong><br>
+        <span class="text-muted small">${u.headline || ""}</span>
+      </div>
+      <button class="btn btn-outline-primary btn-sm">Message</button>
+    </div>`;
+  });
+}
+
+/* REQUESTS */
+async function loadRequests(){
+  const res = await fetch(API+"/requests",{headers:{Authorization:"Bearer "+token}});
+  const users = await res.json();
+
+  const box = document.querySelector("#requests .list-group");
+  box.innerHTML = "";
+
+  users.forEach(u=>{
+    box.innerHTML += `
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>${u.fullname}</strong><br>
+        <span class="text-muted small">${u.headline || ""}</span>
+      </div>
+      <div>
+        <button class="btn btn-success btn-sm" onclick="accept(${u.id})">Accept</button>
+        <button class="btn btn-danger btn-sm" onclick="reject(${u.id})">Reject</button>
+      </div>
+    </div>`;
+  });
+}
+
+/* ACCEPT */
+async function accept(id){
+  await fetch(API+"/accept/"+id,{
+    method:"POST",
+    headers:{Authorization:"Bearer "+token}
+  });
+  loadRequests();
+  loadConnections();
+}
+
+/* REJECT */
+async function reject(id){
+  await fetch(API+"/reject/"+id,{
+    method:"POST",
+    headers:{Authorization:"Bearer "+token}
+  });
+  loadRequests();
+}
+
+/* INIT */
+loadSuggestions();
+loadConnections();
+loadRequests();
+</script>
+
+</body>
+</html>

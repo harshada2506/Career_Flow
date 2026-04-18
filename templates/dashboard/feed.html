@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Flow | Feed</title>
+
+<style>
+:root{
+ --primary:#0a66c2;
+ --dark:#1f2937;
+ --gray:#6b7280;
+ --light:#f3f6f8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Roboto,sans-serif;}
+
+body{background:var(--light);}
+
+/* Layout */
+.container{
+ max-width:1100px;
+ margin:30px auto;
+ display:grid;
+ grid-template-columns: 260px 1fr 260px;
+ gap:20px;
+}
+
+/* Cards */
+.card{
+ background:white;
+ border-radius:16px;
+ padding:18px;
+ box-shadow:0 15px 35px rgba(0,0,0,0.06);
+}
+
+/* Profile Summary */
+.profile-summary img{
+ width:70px;
+ height:70px;
+ border-radius:50%;
+ margin-bottom:10px;
+}
+
+/* Post Box */
+.post-box textarea{
+ width:100%;
+ border:1px solid #d1d5db;
+ border-radius:10px;
+ padding:10px;
+ resize:none;
+ height:80px;
+}
+
+.post-actions{
+ display:flex;
+ justify-content:space-between;
+ margin-top:10px;
+}
+
+.post-actions button{
+ background:var(--primary);
+ color:white;
+ border:none;
+ padding:8px 18px;
+ border-radius:8px;
+ cursor:pointer;
+}
+
+/* Post */
+.post{
+ margin-top:15px;
+}
+
+.post-header{
+ display:flex;
+ gap:10px;
+ align-items:center;
+ margin-bottom:10px;
+}
+
+.post-header img{
+ width:45px;
+ height:45px;
+ border-radius:50%;
+}
+
+.post-content{
+ font-size:14px;
+ color:var(--dark);
+ margin-bottom:10px;
+}
+
+.post-image{
+ width:100%;
+ border-radius:10px;
+ margin-top:10px;
+}
+
+/* Interaction */
+.post-footer{
+ display:flex;
+ justify-content:space-around;
+ margin-top:10px;
+ border-top:1px solid #e5e7eb;
+ padding-top:8px;
+}
+
+.post-footer button{
+ background:none;
+ border:none;
+ cursor:pointer;
+ color:var(--gray);
+ font-weight:600;
+}
+
+/* Right Panel */
+.trending li{
+ margin-bottom:10px;
+ font-size:14px;
+}
+
+.status-box{
+ font-size:14px;
+ color:var(--gray);
+ padding:10px 0;
+ text-align:center;
+}
+
+.error-box{
+ color:#dc2626;
+ font-size:14px;
+ text-align:center;
+ padding:10px 0;
+}
+
+/* Responsive */
+@media(max-width:900px){
+ .container{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LEFT PANEL -->
+<div class="card profile-summary">
+ <img src="../../static/images/default_profile.png" alt="Profile">
+ <h4 id="myName">Loading...</h4>
+ <p id="myRole">Loading...</p>
+ <hr>
+ <p><strong>Email:</strong> <span id="myEmail">Loading...</span></p>
+ <p><strong>User ID:</strong> <span id="myId">Loading...</span></p>
+</div>
+
+<!-- MIDDLE FEED -->
+<div>
+
+ <!-- Create Post -->
+ <div class="card post-box">
+  <textarea placeholder="Share achievement, update or idea..."></textarea>
+  <div class="post-actions">
+   <span>📷 Photo &nbsp; 🏆 Achievement</span>
+   <button type="button">Post</button>
+  </div>
+ </div>
+
+ <!-- Dynamic Feed -->
+ <div id="feedContainer" class="status-box">Loading feed...</div>
+
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="card">
+ <h4>Trending Careers</h4>
+ <ul class="trending">
+  <li>AI Engineer</li>
+  <li>Backend Developer</li>
+  <li>Data Analyst</li>
+  <li>Cloud Engineer</li>
+ </ul>
+</div>
+
+</div>
+
+<script>
+const API_BASE = "http://127.0.0.1:8000";
+const token = localStorage.getItem("access_token");
+
+if(!token){
+ alert("Please login first");
+ window.location.href = "../authenticationmodule/login.html";
+}
+
+let currentUserEmail = "";
+
+async function loadMyProfile(){
+ try{
+  const res = await fetch(API_BASE + "/me", {
+   headers:{
+    "Authorization":"Bearer " + token
+   }
+  });
+
+  if(!res.ok){
+   throw new Error("Unauthorized");
+  }
+
+  const data = await res.json();
+
+  currentUserEmail = data.email || "";
+
+  document.getElementById("myName").innerText = data.fullname || "User";
+  document.getElementById("myRole").innerText = data.role || "Role";
+  document.getElementById("myEmail").innerText = data.email || "No email";
+  document.getElementById("myId").innerText = data.id || "N/A";
+
+ }catch(err){
+  alert("Session expired. Login again.");
+  localStorage.removeItem("access_token");
+  window.location.href = "../authenticationmodule/login.html";
+ }
+}
+
+async function loadFeedUsers(){
+ const feedContainer = document.getElementById("feedContainer");
+
+ try{
+  const res = await fetch(API_BASE + "/users", {
+   headers:{
+    "Authorization":"Bearer " + token
+   }
+  });
+
+  if(!res.ok){
+   throw new Error("Failed to fetch users");
+  }
+
+  const users = await res.json();
+
+  if(!Array.isArray(users) || users.length === 0){
+   feedContainer.innerHTML = `<div class="status-box">No users found.</div>`;
+   return;
+  }
+
+  const otherUsers = users.filter(u => u.email !== currentUserEmail);
+
+  if(otherUsers.length === 0){
+   feedContainer.innerHTML = `<div class="status-box">No other users available.</div>`;
+   return;
+  }
+
+  let html = "";
+
+  otherUsers.forEach((u, index) => {
+   const timeLabel = index % 2 === 0 ? "Recently" : "Today";
+
+   html += `
+    <div class="card post">
+      <div class="post-header">
+        <img src="../../static/images/default_profile.png" alt="User">
+        <div>
+          <strong>${u.fullname || "Unnamed User"}</strong>
+          <div style="font-size:12px;color:gray;">${timeLabel} • ${u.role || "User"}</div>
+        </div>
+      </div>
+      <div class="post-content">
+        Email: ${u.email || "No email available"}<br>
+        User ID: ${u.id || "N/A"}
+      </div>
+      <div class="post-footer">
+        <button type="button">👍 Like</button>
+        <button type="button">💬 Comment</button>
+        <button type="button">↗ Share</button>
+      </div>
+    </div>
+   `;
+  });
+
+  feedContainer.innerHTML = html;
+
+ }catch(err){
+  console.error(err);
+  feedContainer.innerHTML = `<div class="error-box">Could not load users from backend.</div>`;
+ }
+}
+
+async function initFeed(){
+ await loadMyProfile();
+ await loadFeedUsers();
+}
+
+initFeed();
+</script>
+
+</body>
+</html>

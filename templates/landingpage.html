@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Flow | Professional Growth Platform</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Poppins', sans-serif;
+    background:#f4f6f9;
+    color:#1e293b;
+}
+
+/* NAVBAR */
+.navbar{
+    background:#ffffff;
+    box-shadow:0 4px 20px rgba(0,0,0,0.05);
+}
+.navbar-brand{
+    font-weight:600;
+    font-size:1.2rem;
+    display:flex;
+    align-items:center;
+}
+
+/* Logo Floating / Hover */
+.navbar-brand img {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    animation: float 3s ease-in-out infinite;
+}
+.navbar-brand img:hover {
+    transform: scale(1.15) translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: none; /* stop floating on hover */
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+
+/* HERO */
+.hero{
+    padding:120px 20px;
+    background:linear-gradient(135deg,#0f172a 0%, #1e293b 50%, #312e81 100%);
+    color:white;
+}
+.hero h1{
+    font-size:2.8rem;
+    font-weight:700;
+}
+.hero p{
+    font-size:1.1rem;
+    color:#cbd5e1;
+}
+
+/* BUTTONS */
+.btn-primary-custom{
+    background:#2563eb;
+    border:none;
+    border-radius:30px;
+    padding:12px 28px;
+    font-weight:500;
+}
+.btn-primary-custom:hover{
+    background:#1d4ed8;
+}
+
+.btn-outline-light{
+    border-radius:30px;
+}
+
+/* SECTIONS */
+section{
+    padding:90px 0;
+}
+
+/* CARDS */
+.card-clean{
+    border:none;
+    border-radius:18px;
+    padding:30px;
+    background:white;
+    transition:0.3s;
+}
+.card-clean:hover{
+    transform:translateY(-8px);
+    box-shadow:0 20px 40px rgba(0,0,0,0.06);
+}
+
+.card-clean img{
+    transition:0.3s;
+}
+.card-clean:hover img{
+    transform:scale(1.04);
+}
+
+.icon{
+    font-size:28px;
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* PROCESS */
+.process{
+    background:#e2e8f0;
+    border-radius:25px;
+    padding:60px;
+}
+
+/* CTA */
+.cta{
+    background:linear-gradient(135deg,#1e293b,#312e81);
+    color:white;
+    border-radius:25px;
+    padding:70px 30px;
+    text-align:center;
+}
+
+/* FOOTER */
+footer{
+    padding:40px 0;
+    text-align:center;
+    color:#64748b;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg">
+<div class="container">
+    <a class="navbar-brand" href="#">
+        <img src="logo.jpg" width="50" height="50" class="rounded-circle me-2">
+        Career Flow
+    </a>
+    <div>
+        <a href="authenticationmodule/login.html" class="btn btn-outline-dark rounded-pill me-2">Sign In</a>
+        <a href="authenticationmodule/register.html" class="btn btn-dark rounded-pill">Create Account</a>
+    </div>
+</div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+<div class="container">
+<div class="row align-items-center">
+
+    <!-- TEXT -->
+    <div class="col-md-6">
+        <h1>Smarter Way to Build Your Career</h1>
+        <p class="mt-3">
+            Create your professional profile, apply to curated opportunities,
+            track applications, and enhance skills — all in one secure platform.
+        </p>
+        <div class="mt-4">
+            <a href="authenticationmodule/index.html" class="btn btn-primary-custom me-3">Get Started Free</a>
+            <a href="#features" class="btn btn-outline-light">Explore Features</a>
+        </div>
+    </div>
+
+    <!-- HERO IMAGE PLACEHOLDER -->
+    <div class="col-md-6 text-center mt-4 mt-md-0">
+        <img src="https://tse1.mm.bing.net/th/id/OIP.GJTPz4wj8Arry2SsGvzxLQHaEJ?rs=1&pid=ImgDetMain&o=7&rm=3" 
+             alt="Dashboard Preview"
+             class="img-fluid rounded shadow-lg"
+             style="max-height:400px;">
+    </div>
+
+</div>
+</div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+<div class="container text-center">
+    <h2 class="fw-bold mb-5">All-in-One Career Management</h2>
+    <div class="row g-4">
+
+        <!-- PROFILE -->
+        <div class="col-md-4">
+            <div class="card-clean">
+                <i class="bi bi-person-badge icon"></i>
+                <h5 class="mt-3">Professional Profile</h5>
+                <p class="text-muted">
+                    Showcase your skills, education, certifications,
+                    and achievements in a structured format.
+                </p>
+            </div>
+        </div>
+
+        <!-- APPLICATION TRACKING -->
+        <div class="col-md-4">
+            <div class="card-clean">
+               <i class="bi bi-briefcase icon"></i>
+                <h5 class="mt-3">Application Tracking</h5>
+                <p class="text-muted">
+                    Track every job or internship application
+                    and monitor status updates easily.
+                </p>
+            </div>
+        </div>
+
+        <!-- SKILL INSIGHTS -->
+        <div class="col-md-4">
+            <div class="card-clean">
+               <i class="bi bi-graph-up icon"></i>
+                <h5 class="mt-3">Skill Insights</h5>
+                <p class="text-muted">
+                    Receive intelligent suggestions to improve
+                    and align your skills with industry demand.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+</section>
+
+<!-- SERVICES / NETWORK SECTION -->
+<section id="services">
+<div class="container text-center">
+    <h2 class="fw-bold mb-5">What We Offer</h2>
+    <div class="row g-4">
+
+        <!-- Networking -->
+        <div class="col-md-3">
+            <div class="card-clean">
+               <i class="bi bi-people icon"></i>
+                <h5 class="mt-3">Professional Networking</h5>
+                <p class="text-muted">
+                    Connect with peers, mentors, and recruiters
+                    to expand your professional circle.
+                </p>
+            </div>
+        </div>
+
+        <!-- Learning -->
+        <div class="col-md-3">
+            <div class="card-clean">
+                <i class="bi bi-mortarboard icon"></i>
+                <h5 class="mt-3">Skill Development</h5>
+                <p class="text-muted">
+                    Access personalized learning paths and training
+                    to improve skills relevant to your career goals.
+                </p>
+            </div>
+        </div>
+
+        <!-- Job Opportunities -->
+        <div class="col-md-3">
+            <div class="card-clean">
+               <i class="bi bi-briefcase icon"></i>
+                <h5 class="mt-3">Jobs & Internships</h5>
+                <p class="text-muted">
+                    Explore curated job and internship opportunities
+                    and apply directly through the platform.
+                </p>
+            </div>
+        </div>
+
+        <!-- AI Assistance -->
+        <div class="col-md-3">
+            <div class="card-clean">
+                <i class="bi bi-lightbulb icon"></i>
+                <h5 class="mt-3">AI Guidance</h5>
+                <p class="text-muted">
+                    Get smart recommendations on skills,
+                    applications, and career strategies.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+</section>
+
+<!-- BENEFITS SECTION -->
+<section id="benefits">
+<div class="container text-center">
+    <h2 class="fw-bold mb-5">Why Choose Career Flow?</h2>
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card-clean">
+                <i class="bi bi-shield-check icon"></i>
+                <h5 class="mt-3">Secure & Trusted</h5>
+                <p class="text-muted">
+                    Your profile and data are safe with our secure platform,
+                    trusted by professionals worldwide.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-clean">
+                <i class="bi bi-speedometer2 icon"></i>
+                <h5 class="mt-3">Easy to Use</h5>
+                <p class="text-muted">
+                    Navigate through profiles, applications, and insights
+                    seamlessly with a user-friendly interface.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-clean">
+                <i class="bi bi-award icon"></i>
+                <h5 class="mt-3">Boost Your Career</h5>
+                <p class="text-muted">
+                    Achieve professional growth faster with
+                    guidance, skill tracking, and opportunities.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+<div class="container">
+    <div class="process text-center">
+        <h2 class="fw-bold mb-4">How Career Flow Works</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <h6>1. Create Your Profile</h6>
+                <p class="text-muted">Add skills, experience and achievements.</p>
+            </div>
+            <div class="col-md-4">
+                <h6>2. Discover & Apply</h6>
+                <p class="text-muted">Explore verified job and internship listings.</p>
+            </div>
+            <div class="col-md-4">
+                <h6>3. Track & Improve</h6>
+                <p class="text-muted">Monitor progress and upgrade your skills.</p>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- NETWORKING SECTION -->
+<section id="networking" class="bg-light">
+<div class="container text-center">
+    <h2 class="fw-bold mb-4">Connect With Professionals</h2>
+    <p class="mb-5 text-muted">
+        Build meaningful connections with peers, mentors, and recruiters.  
+        Share knowledge, collaborate on projects, and discover opportunities tailored to your career.
+    </p>
+    <div class="row g-3 justify-content-center">
+        <div class="col-md-2">
+            <img src="https://as1.ftcdn.net/v2/jpg/07/22/91/70/1000_F_722917031_YTSmmNexhsa2b5LvTUt6DegcihvQLENB.jpg" alt="Professional Network" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-md-2">
+            <img src="https://cdn.uconnectlabs.com/wp-content/uploads/sites/5/2018/03/InterNations-Expat-Blog_Professional-Networking_Pic-2.jpg" alt="Professional Network" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-md-2">
+            <img src="https://tse4.mm.bing.net/th/id/OIP.K3xxL_zgDxhHCPDHhUvFKwHaE7?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Professional Network" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-md-2">
+            <img src="https://tse3.mm.bing.net/th/id/OIP.294M2BINfMmJ6TkxG3kaAgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Professional Network" class="img-fluid rounded shadow-sm">
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- FINAL CTA -->
+<section>
+<div class="container">
+    <div class="cta">
+        <h2 class="fw-bold">Take Control of Your Professional Journey</h2>
+        <p class="mt-3">Start building meaningful opportunities today.</p>
+        <a href="authenticationmodule/index.html" class="btn btn-light rounded-pill mt-3 px-4">
+            Create Free Account
+        </a>
+    </div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="container">
+    <h6 class="fw-bold">Career Flow</h6>
+    <p>Professional Growth. Simplified.</p>
+    <small>© 2026 Career Flow. All rights reserved.</small>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

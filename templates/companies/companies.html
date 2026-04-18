@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerFlow | Companies</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f3f6f8;
+}
+
+/* Navbar */
+.navbar{
+    background:#0a66c2;
+    color:white;
+    padding:15px 30px;
+    font-size:20px;
+}
+
+/* Layout */
+.container{
+    max-width:1100px;
+    margin:30px auto;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Company Card */
+.company-card{
+    cursor:pointer;
+    transition:0.2s;
+}
+.company-card:hover{
+    transform:translateY(-4px);
+}
+
+/* Sections */
+.section{
+    margin-top:20px;
+}
+
+.job, .post{
+    border-bottom:1px solid #eee;
+    padding:10px 0;
+}
+
+.job:last-child,
+.post:last-child{
+    border-bottom:none;
+}
+
+button{
+    background:#0a66c2;
+    color:white;
+    border:none;
+    padding:6px 14px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.back-btn{
+    margin-bottom:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">🏢 CareerFlow - Companies</div>
+
+<div class="container">
+
+    <!-- Companies List -->
+    <div id="companyList" class="grid"></div>
+
+    <!-- Company Profile (Hidden Initially) -->
+    <div id="companyProfile" style="display:none;">
+        <button class="back-btn" onclick="showCompanyList()">⬅ Back</button>
+
+        <div id="companyInfo" class="card"></div>
+
+        <div class="card section">
+            <h3>📢 Company Updates</h3>
+            <div id="posts"></div>
+        </div>
+
+        <div class="card section">
+            <h3>💼 Open Positions</h3>
+            <div id="jobs"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+// Dummy Data
+const companies = [
+{
+    id:1,
+    name:"Infosys",
+    industry:"IT Services",
+    location:"Bangalore",
+    website:"www.infosys.com",
+    description:"Global leader in digital services.",
+    jobs:[
+        {title:"Java Developer", experience:"0-2", location:"Pune"},
+        {title:"Backend Engineer", experience:"1-3", location:"Bangalore"}
+    ],
+    posts:[
+        "We are hiring freshers!",
+        "Launching new AI transformation services."
+    ]
+},
+{
+    id:2,
+    name:"TCS",
+    industry:"Consulting",
+    location:"Mumbai",
+    website:"www.tcs.com",
+    description:"Leading IT consulting company.",
+    jobs:[
+        {title:"Frontend Developer", experience:"0-2", location:"Hyderabad"}
+    ],
+    posts:[
+        "Campus hiring started for 2025 batch."
+    ]
+}
+];
+
+const listContainer = document.getElementById("companyList");
+const profileSection = document.getElementById("companyProfile");
+
+// Load Company Cards
+function loadCompanies(){
+    listContainer.innerHTML = "";
+    companies.forEach(company=>{
+        const div = document.createElement("div");
+        div.className = "card company-card";
+        div.innerHTML = `
+            <h3>${company.name}</h3>
+            <p>${company.industry}</p>
+            <small>${company.location}</small>
+        `;
+        div.onclick = ()=>{
+            showCompanyProfile(company.id);
+        };
+        listContainer.appendChild(div);
+    });
+}
+
+// Show Company Profile
+function showCompanyProfile(id){
+    const company = companies.find(c => c.id === id);
+
+    document.getElementById("companyInfo").innerHTML = `
+        <h2>${company.name}</h2>
+        <p>${company.industry} • ${company.location}</p>
+        <p>🌐 ${company.website}</p>
+        <p>${company.description}</p>
+    `;
+
+    // Posts
+    const postContainer = document.getElementById("posts");
+    postContainer.innerHTML = "";
+    company.posts.forEach(post=>{
+        postContainer.innerHTML += `<div class="post">${post}</div>`;
+    });
+
+    // Jobs
+    const jobContainer = document.getElementById("jobs");
+    jobContainer.innerHTML = "";
+    company.jobs.forEach(job=>{
+        jobContainer.innerHTML += `
+            <div class="job">
+                <b>${job.title}</b><br>
+                Experience: ${job.experience} Years<br>
+                Location: ${job.location}<br>
+                <button>Apply</button>
+            </div>
+        `;
+    });
+
+    listContainer.style.display = "none";
+    profileSection.style.display = "block";
+}
+
+// Back to List
+function showCompanyList(){
+    profileSection.style.display = "none";
+    listContainer.style.display = "grid";
+}
+
+// Initial Load
+loadCompanies();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerFlow | Internships</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f3f6f8;
+}
+
+.navbar{
+    background:#0a66c2;
+    color:white;
+    padding:14px 30px;
+    font-size:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:30px auto;
+}
+
+/* Filters */
+.filters{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.filters input, .filters select{
+    padding:8px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+/* Internship Card */
+.card{
+    background:white;
+    padding:18px;
+    border-radius:12px;
+    margin-bottom:15px;
+}
+
+.title{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.company{
+    color:#0a66c2;
+    margin-top:4px;
+}
+
+.details{
+    margin-top:8px;
+    font-size:14px;
+}
+
+.tags span{
+    background:#eef3f8;
+    padding:4px 8px;
+    border-radius:6px;
+    margin-right:5px;
+    font-size:12px;
+}
+
+.actions{
+    margin-top:12px;
+}
+
+.apply{
+    background:#0a66c2;
+    color:white;
+    border:none;
+    padding:8px 16px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.save{
+    margin-left:10px;
+    padding:8px 16px;
+    border-radius:6px;
+    border:1px solid #0a66c2;
+    background:white;
+    color:#0a66c2;
+    cursor:pointer;
+}
+
+.empty{
+    text-align:center;
+    color:gray;
+    margin-top:30px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">🎓 Internship Opportunities</div>
+
+<div class="container">
+
+<!-- Filters -->
+<div class="filters">
+<input type="text" placeholder="Search internship">
+<select>
+<option>Location</option>
+<option>Pune</option>
+<option>Mumbai</option>
+<option>Bangalore</option>
+</select>
+
+<select>
+<option>Duration</option>
+<option>1 Month</option>
+<option>3 Months</option>
+<option>6 Months</option>
+</select>
+
+<select>
+<option>Work Type</option>
+<option>Remote</option>
+<option>Onsite</option>
+<option>Hybrid</option>
+</select>
+</div>
+
+<!-- Internship Card 1 -->
+<div class="card">
+<div class="title">Java Developer Intern</div>
+<div class="company">Infosys</div>
+
+<div class="details">
+Duration: 3 Months | Stipend: ₹15,000/month | Location: Bangalore
+</div>
+
+<div class="tags">
+<span>Java</span>
+<span>Spring Boot</span>
+<span>MySQL</span>
+</div>
+
+<div class="actions">
+<button class="apply">Apply</button>
+<button class="save">Save</button>
+</div>
+</div>
+
+<!-- Internship Card 2 -->
+<div class="card">
+<div class="title">Web Development Intern</div>
+<div class="company">TCS</div>
+
+<div class="details">
+Duration: 6 Months | Stipend: ₹12,000/month | Remote
+</div>
+
+<div class="tags">
+<span>HTML</span>
+<span>CSS</span>
+<span>JavaScript</span>
+</div>
+
+<div class="actions">
+<button class="apply">Apply</button>
+<button class="save">Save</button>
+</div>
+</div>
+
+<div class="empty">
+No more internships available currently
+</div>
+
+</div>
+
+</body>
+</html>
