@@ -1,9 +1,13 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "postgresql://careeruser:StrongPassword123@localhost:5432/careerflow"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"sslmode": "require"}
+)
 
 SessionLocal = sessionmaker(
     bind=engine,
@@ -13,7 +17,6 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
-# ✅ REQUIRED FOR FASTAPI
 def get_db():
     db = SessionLocal()
     try:
